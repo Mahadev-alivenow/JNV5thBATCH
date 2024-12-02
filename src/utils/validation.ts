@@ -5,6 +5,17 @@ export const isNameUnique = (name: string, existingAlumni: { name: string }[]): 
 };
 
 export const formatPhoneNumber = (phone: string): string => {
-  return phone.replace(/\D/g, '')
-    .replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
+  // Remove all non-digit characters
+  const cleaned = phone.replace(/\D/g, '');
+  
+  // If the number starts with '91', remove it
+  const number = cleaned.startsWith('91') ? cleaned.slice(2) : cleaned;
+  
+  // Ensure we have exactly 10 digits
+  if (number.length === 10) {
+    return `+91 ${number}`;
+  }
+  
+  // Return original format if not valid
+  return phone;
 };
