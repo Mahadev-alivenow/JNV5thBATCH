@@ -1,4 +1,8 @@
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+const API_URL = import.meta.env.VITE_API_URL;
+
+if (!API_URL) {
+  console.error('API_URL is not defined in environment variables');
+}
 
 export async function saveAlumni(alumniData: any) {
   const response = await fetch(`${API_URL}/alumni`, {
@@ -8,22 +12,21 @@ export async function saveAlumni(alumniData: any) {
     },
     body: JSON.stringify(alumniData),
   });
-
+  
   if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.message || 'Failed to save alumni data');
+    throw new Error(`HTTP error! status: ${response.status}`);
   }
-
+  
   return response.json();
 }
 
 export async function getAlumni() {
   const response = await fetch(`${API_URL}/alumni`);
-
+  
   if (!response.ok) {
-    throw new Error('Failed to fetch alumni data');
+    throw new Error(`HTTP error! status: ${response.status}`);
   }
-
+  
   return response.json();
 }
 
@@ -31,11 +34,11 @@ export async function checkNameExists(firstName: string, lastName: string) {
   const response = await fetch(
     `${API_URL}/check-name?firstName=${encodeURIComponent(firstName)}&lastName=${encodeURIComponent(lastName)}`
   );
-
+  
   if (!response.ok) {
-    throw new Error('Failed to check name existence');
+    throw new Error(`HTTP error! status: ${response.status}`);
   }
-
+  
   const data = await response.json();
   return data.exists;
 }
